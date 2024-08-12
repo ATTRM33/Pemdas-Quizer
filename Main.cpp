@@ -7,6 +7,7 @@ Contains Modulus Quizzer and PEMMDAS Quizzer
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 #include <vector>
 using namespace std;
 
@@ -14,7 +15,7 @@ using namespace std;
 
 double modulusQuiz();
 double pemmdasQuiz();
-void printScores(vector<double> modulus, vector<double> pemmdas);
+double solve(vector<double>& operands, vector<char>& operators);
 
 int main()
 {
@@ -51,7 +52,6 @@ int main()
 
 
 }
-
 
 double modulusQuiz() {
     int times = 0;
@@ -97,135 +97,121 @@ double pemmdasQuiz() {
 
     while (times > 0) {
 
-        //variable declaration
+        vector<double> operands;
+        vector<char> operators;
 
-        //getnerate random number between 1 and 20
-        int num1 = rand() % 19 + 1;
-        int num2 = rand() % 19 + 1;
-        int num3 = rand() % 19 + 1;
-        int num4 = rand() % 19 + 1;
-        int num5 = rand() % 19 + 1;
-        int num6 = rand() % 19 + 1;
-        int num7 = rand() % 19 + 1;
-        int num8 = rand() % 19 + 1;
-        int num9 = rand() % 19 + 1;
+        // Generate random operands and operators
+        operands.push_back(rand() % 19 + 1);
 
-        //generate random number for arithmetic symbol
-        int randOperator1 = rand() % 5;
-        int randOperator2 = rand() % 5;
-        int randOperator3 = rand() % 5;
-        int randOperator4 = rand() % 5;
-        int randOperator5 = rand() % 5;
-        int randOperator6 = rand() % 5;
-        int randOperator7 = rand() % 5;
-        int randOperator8 = rand() % 5;
-
-        char operator1;
-        char operator2;
-        char operator3;
-        char operator4;
-        char operator5;
-        char operator6;
-        char operator7;
-        char operator8;
-        int answer = 0;
-
-        //switch cases to allocate an arithmetic symbol to a random integer
-        switch (randOperator1) {
-        case 0: operator1 = '+'; break;
-        case 1: operator1 = '-'; break;
-        case 2: operator1 = '/'; break;
-        case 3: operator1 = '*'; break;
-        case 4: operator1 = '%'; break;
+        for (int i = 0; i < 4; ++i) {  
+            int randOperator = rand() % 5;
+            char op;
+            switch (randOperator) {
+            case 0: op = '+'; break;
+            case 1: op = '-'; break;
+            case 2: op = '/'; break;
+            case 3: op = '*'; break;
+            case 4: op = '%'; break;
+            }
+            operators.push_back(op);
+            operands.push_back(rand() % 19 + 1);
         }
 
-        switch (randOperator2) {
-        case 0: operator2 = '+'; break;
-        case 1: operator2 = '-'; break;
-        case 2: operator2 = '/'; break;
-        case 3: operator2 = '*'; break;
-        case 4: operator2 = '%'; break;
+        // Display the problem to the user
+        cout << "What is: ";
+        for (int i = 0; i < operators.size(); ++i) {
+            cout << operands[i] << " " << operators[i] << " ";
+        }
+        cout << operands.back() << "?" << endl;
+
+        double userAnswer;
+        cin >> userAnswer;
+
+        while (!operators.empty()) {
+            char op = operators.back();
+            operators.pop_back();
+
+            double rightOperand = operands.back();
+            operands.pop_back();
+            double leftOperand = operands.back();
+            operands.pop_back();
+
+            double result;
+            if (op == '*') {
+                result = leftOperand * rightOperand;
+            }
+            else if (op == '/') {
+                result = leftOperand / rightOperand;
+            }
+            else if (op == '%') {
+                result = static_cast<int>(leftOperand) % static_cast<int>(rightOperand);
+            }
+            else if (op == '+') {
+                result = leftOperand + rightOperand;
+            }
+            else { // op == '-'
+                result = leftOperand - rightOperand;
+            }
+
+            // Push the result back to the vector
+            operands.push_back(result);
         }
 
-        switch (randOperator3) {
-        case 0: operator3 = '+'; break;
-        case 1: operator3 = '-'; break;
-        case 2: operator3 = '/'; break;
-        case 3: operator3 = '*'; break;
-        case 4: operator3 = '%'; break;
+        //final result
+        double correctAnswer = operands.back(); 
+
+        if (abs(userAnswer - correctAnswer) < 1e-9) {  
+            cout << "That's right!" << endl;
+            score++;
         }
-
-        switch (randOperator4) {
-        case 0: operator4 = '+'; break;
-        case 1: operator4 = '-'; break;
-        case 2: operator4 = '/'; break;
-        case 3: operator4 = '*'; break;
-        case 4: operator4 = '%'; break;
+        else {
+            cout << "No, the answer is " << correctAnswer << endl;
         }
-
-        switch (randOperator5) {
-        case 0: operator5 = '+'; break;
-        case 1: operator5 = '-'; break;
-        case 2: operator5 = '/'; break;
-        case 3: operator5 = '*'; break;
-        case 4: operator5 = '%'; break;
-        }
-
-        switch (randOperator6) {
-        case 0: operator6 = '+'; break;
-        case 1: operator6 = '-'; break;
-        case 2: operator6 = '/'; break;
-        case 3: operator6 = '*'; break;
-        case 4: operator6 = '%'; break;
-        }
-
-        switch (randOperator7) {
-        case 0: operator7 = '+'; break;
-        case 1: operator7 = '-'; break;
-        case 2: operator7 = '/'; break;
-        case 3: operator7 = '*'; break;
-        case 4: operator7 = '%'; break;
-        }
-
-        switch (randOperator8) {
-        case 0: operator8 = '+'; break;
-        case 1: operator8 = '-'; break;
-        case 2: operator8 = '/'; break;
-        case 3: operator8 = '*'; break;
-        case 4: operator8 = '%'; break;
-        }
-
-
-
-        // display random PEMMDAS problem to console
-        cout << "What is:" << endl
-            << num1 << operator1 << num2 << operator2 << num3 << operator3 << num4 << operator4 << num5 <<
-            operator5 << num6 << operator6 << num7 << operator7 << num8 << operator8 << num9 << endl;
-        cin >> answer;
 
         times--;
-
     }
 
+    //format and display the percentage correct
+    double percent = score / static_cast<double>(total) * 100;
+    std::cout << "You scored " << score << " out of " << total << endl
+    << "That's " << percent << "%." << endl;
 
-
-    return 0;
+    return percent;
 }
 
-void printScores(vector<double> modulus, vector<double> pemmdas) {
-    int modCount = 1, pemCount = 1;
-    cout << "Your percentages on modulus quizzes are:" << endl;
-    for (double percent : modulus) {
-        cout << modCount << ":\t" << percent << endl;
-        modCount++;
-    }
-    cout << endl << endl;
-    cout << "Your percentages on PEMMDAS quizzes are:" << endl;
-    for (double percent : pemmdas) {
-        cout << modCount << ":\t" << percent << endl;
-        modCount++;
+double solve(vector<double>& operands, vector<char>& operators) {
+    if (operators.empty()) {
+        return operands.back();
     }
 
+    char op = operators.back();
+    operators.pop_back();
 
+    double rightOperand = operands.back();
+    operands.pop_back();
+    double leftOperand = operands.back();
+    operands.pop_back();
 
+    double result;
+    if (op == '*') {
+        result = leftOperand * rightOperand;
+    }
+    else if (op == '/') {
+        result = leftOperand / rightOperand;
+    }
+    else if (op == '%') {
+        result = static_cast<int>(leftOperand) % static_cast<int>(rightOperand);
+    }
+    else if (op == '+') {
+        result = leftOperand + rightOperand;
+    }
+    else { 
+        result = leftOperand - rightOperand;
+    }
+
+    // Push the result back to operands vector
+    operands.push_back(result);
+
+    // Recur to process the remaining operators and operands
+    return solve(operands, operators);
 }
