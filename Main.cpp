@@ -1,8 +1,6 @@
-/*
-Contains Modulus Quizzer and PEMMDAS Quizzer
-*/
-
-
+//Zach Brown
+//CS2
+//Module 5 lab PEMDAS QUIZ
 
 #include <iostream>
 #include <cstdlib>
@@ -12,7 +10,8 @@ Contains Modulus Quizzer and PEMMDAS Quizzer
 using namespace std;
 
 
-
+// prototypes
+void printScores(vector<double> modulus, vector<double> pemmdas);
 double modulusQuiz();
 double pemmdasQuiz();
 double solve(vector<double>& operands, vector<char>& operators);
@@ -97,11 +96,11 @@ double pemmdasQuiz() {
 
     while (times > 0) {
 
-        vector<double> operands;
+        vector<double> numbers;
         vector<char> operators;
 
-        // Generate random operands and operators
-        operands.push_back(rand() % 19 + 1);
+        // generate random operands and operators
+        numbers.push_back(rand() % 19 + 1);
 
         for (int i = 0; i < 4; ++i) {  
             int randOperator = rand() % 5;
@@ -114,15 +113,15 @@ double pemmdasQuiz() {
             case 4: op = '%'; break;
             }
             operators.push_back(op);
-            operands.push_back(rand() % 19 + 1);
+            numbers.push_back(rand() % 19 + 1);
         }
 
-        // Display the problem to the user
+        // display the problem to the user
         cout << "What is: ";
         for (int i = 0; i < operators.size(); ++i) {
-            cout << operands[i] << " " << operators[i] << " ";
+            cout << numbers[i] << " " << operators[i] << " ";
         }
-        cout << operands.back() << "?" << endl;
+        cout << numbers.back() << "?" << endl;
 
         double userAnswer;
         cin >> userAnswer;
@@ -131,34 +130,34 @@ double pemmdasQuiz() {
             char op = operators.back();
             operators.pop_back();
 
-            double rightOperand = operands.back();
-            operands.pop_back();
-            double leftOperand = operands.back();
-            operands.pop_back();
+            double rightNum = numbers.back();
+            numbers.pop_back();
+            double leftNum = numbers.back();
+            numbers.pop_back();
 
             double result;
             if (op == '*') {
-                result = leftOperand * rightOperand;
+                result = leftNum * rightNum;
             }
             else if (op == '/') {
-                result = leftOperand / rightOperand;
+                result = leftNum / rightNum;
             }
             else if (op == '%') {
-                result = static_cast<int>(leftOperand) % static_cast<int>(rightOperand);
+                result = static_cast<int>(leftNum) % static_cast<int>(rightNum);
             }
             else if (op == '+') {
-                result = leftOperand + rightOperand;
+                result = leftNum + rightNum;
             }
             else { // op == '-'
-                result = leftOperand - rightOperand;
+                result = leftNum - rightNum;
             }
 
-            // Push the result back to the vector
-            operands.push_back(result);
+            // push the result back to the vector
+            numbers.push_back(result);
         }
 
         //final result
-        double correctAnswer = operands.back(); 
+        double correctAnswer = numbers.back();
 
         if (abs(userAnswer - correctAnswer) < 1e-9) {  
             cout << "That's right!" << endl;
@@ -180,6 +179,8 @@ double pemmdasQuiz() {
 }
 
 double solve(vector<double>& operands, vector<char>& operators) {
+
+    //base case for when vector is empty
     if (operators.empty()) {
         return operands.back();
     }
@@ -187,31 +188,48 @@ double solve(vector<double>& operands, vector<char>& operators) {
     char op = operators.back();
     operators.pop_back();
 
-    double rightOperand = operands.back();
+    double rightNum = operands.back();
     operands.pop_back();
-    double leftOperand = operands.back();
+
+    double leftNum = operands.back();
     operands.pop_back();
 
     double result;
     if (op == '*') {
-        result = leftOperand * rightOperand;
+        result = leftNum * rightNum;
     }
     else if (op == '/') {
-        result = leftOperand / rightOperand;
+        result = leftNum / rightNum;
     }
     else if (op == '%') {
-        result = static_cast<int>(leftOperand) % static_cast<int>(rightOperand);
+        result = static_cast<int>(leftNum) % static_cast<int>(rightNum);
     }
     else if (op == '+') {
-        result = leftOperand + rightOperand;
+        result = leftNum + rightNum;
     }
     else { 
-        result = leftOperand - rightOperand;
+        result = leftNum - rightNum;
     }
 
-    // Push the result back to operands vector
+    // push the result back to operands vector
     operands.push_back(result);
 
-    // Recur to process the remaining operators and operands
+    // recursion to process all operators and operands
     return solve(operands, operators);
+}
+
+
+void printScores(vector<double> modulus, vector<double> pemmdas) {
+    int modCount = 1, pemCount = 1;
+    cout << "Your percentages on modulus quizzes are:" << endl;
+    for (double percent : modulus) {
+        cout << modCount << ":\t" << percent << endl;
+        modCount++;
+    }
+    cout << endl << endl;
+    cout << "Your percentages on PEMMDAS quizzes are:" << endl;
+    for (double percent : pemmdas) {
+        cout << modCount << ":\t" << percent << endl;
+        modCount++;
+    }
 }
